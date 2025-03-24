@@ -1,7 +1,7 @@
-import { createPoll } from "mysql2/promise";
+import { createPool } from "mysql2/promise";
 import "dotenv/config";
 
-const poll = createPoll({
+const pool = createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -11,4 +11,4 @@ const poll = createPoll({
   queueLimit: 0,
 });
 
-export default poll;
+export default pool;
