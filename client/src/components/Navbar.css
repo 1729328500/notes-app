@@ -1,0 +1,36 @@
+.user-profile-link {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.user-profile-link:hover {
+  background-color: #e0f7fa;
+}
+
+.ant-layout-header {
+  padding: 0 24px;
+  background: linear-gradient(to right, #4682b4, #4682b4);
+}
+
+.ant-menu {
+  background: transparent;
+  border-bottom: none;
+}
+
+.ant-menu-item:hover {
+  color: #1890ff !important;
+}
+
+.ant-space {
+  color: #fff;
+}
+
+.ant-typography {
+  margin-bottom: 0;
+}
+
+.ant-avatar {
+  background-color: #4682b4;
+}

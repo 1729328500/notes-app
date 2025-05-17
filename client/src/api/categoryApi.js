@@ -19,3 +19,10 @@ export const updateCategory = async (categoryId, categoryData) => {
 export const deleteCategory = async (categoryId) => {
   return axiosInstance.delete(`/categories/${categoryId}`);
 };
+export default {
+  createCategory,
+  getCategories,
+  getCategory,
+  updateCategory,
+  deleteCategory,
+};

@@ -4,6 +4,13 @@ import pool from "../config/db.js";
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, nickname, avatar_url } = req.body;
+    const [existingUser] = await pool.query(
+      "SELECT * FROM users WHERE username = ? OR email = ?",
+      [username, email]
+    );
+    if (existingUser.length > 0) {
+      return res.status(400).json({ error: "用户名或邮箱已存在" });
+    }
     const [result] = await pool.query(
       "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
       [username, email, password]
@@ -42,6 +49,21 @@ export const getUser = async (req, res) => {
     } else {
       res.status(404).json({ error: "User not found" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 更新用户昵称
+export const updateNickname = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nickname } = req.body;
+    await pool.query("UPDATE users SET nickname = ? WHERE id = ?", [
+      nickname,
+      id,
+    ]);
+    res.status(200).json({ id, nickname });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -11,3 +11,14 @@ export const loginUser = async (userData) => {
 export const getUser = async (userId) => {
   return axiosInstance.get(`/users/${userId}`);
 };
+
+export const updateNickname = async (userId, nickname) => {
+  return axiosInstance.put(`/users/${userId}/nickname`, { nickname });
+};
+
+export default {
+  registerUser,
+  loginUser,
+  getUser,
+  updateNickname,
+};

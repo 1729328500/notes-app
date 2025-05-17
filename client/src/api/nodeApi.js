@@ -10,6 +10,13 @@ export const getNotes = async (userId) => {
   return axiosInstance.get(`/notes/user/${userId}`);
 };
 
+// 根据标签、分类或标题搜索笔记
+export const searchNotesByTags = async (userId, searchText) => {
+  return axiosInstance.get(`/notes/search/${userId}`, {
+    params: { searchText },
+  });
+};
+
 // 查询笔记详情
 export const getNote = async (noteId) => {
   return axiosInstance.get(`/notes/${noteId}`);
@@ -28,4 +35,14 @@ export const updateNote = async (noteId, noteData) => {
 // 删除笔记
 export const deleteNote = async (noteId) => {
   return axiosInstance.delete(`/notes/${noteId}`);
+};
+
+export default {
+  createNote,
+  getNotes,
+  getNote,
+  getNotesByCategory,
+  updateNote,
+  deleteNote,
+  searchNotesByTags,
 };

@@ -3,10 +3,17 @@ import pool from "../config/db.js";
 // 创建笔记
 export const createNote = async (req, res) => {
   try {
-    const { userId, title, content, categoryId, tags } = req.body;
+    const {
+      userId,
+      title,
+      content,
+      categoryId,
+      tags,
+      collection = 0,
+    } = req.body;
     const [result] = await pool.query(
-      "INSERT INTO notes (user_id, title, content, category_id, tags) VALUES (?, ?, ?, ?, ?)",
-      [userId, title, content, categoryId, JSON.stringify(tags)]
+      "INSERT INTO notes (user_id, title, content, category_id, tags, collection) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, title, content, categoryId, JSON.stringify(tags), collection]
     );
     res.status(201).json({
       id: result.insertId,
@@ -17,6 +24,7 @@ export const createNote = async (req, res) => {
       tags,
     });
   } catch (error) {
+    console.error("Error creating note:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -42,6 +50,36 @@ export const getNotesByCategory = async (req, res) => {
       "SELECT * FROM notes WHERE user_id = ? AND category_id = ?",
       [userId, categoryId]
     );
+    res.status(200).json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 根据标签或分类名称搜索笔记
+export const searchNotesByTags = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { searchText } = req.query;
+
+    let query = `
+      SELECT DISTINCT n.* 
+      FROM notes n
+      LEFT JOIN categories c ON n.category_id = c.id
+      WHERE n.user_id = ?
+    `;
+    const params = [userId];
+
+    if (searchText) {
+      query += ` AND (
+        JSON_CONTAINS(n.tags, JSON_ARRAY(?), '$')
+        OR c.name LIKE ?
+        OR n.title LIKE ?
+      )`;
+      params.push(searchText, `%${searchText}%`, `%${searchText}%`);
+    }
+
+    const [rows] = await pool.query(query, params);
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
